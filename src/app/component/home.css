@@ -1,0 +1,44 @@
+.home-container {
+  width: 100%;
+  background-color: aqua;
+  height: 100vh;
+  background-image: url("../../../public/bg3.webp");
+
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.9) 30%,
+      rgb(255, 255, 255, 0.5) 100%
+    ),
+    url("../../../public/bg3.webp");
+  background-position: center;
+  background-size: cover;
+}
+.home-cover {
+  padding: 5%;
+  width: 100%;
+}
+.footer-btn button {
+  margin-right: 10px;
+}
+.footer-btn {
+  margin-top: 50px;
+}
+.subHeading {
+  font-style: italic;
+}
+
+@media only screen and (max-width: 600px) {
+  .footer-btn {
+    display: flex;
+    position: absolute;
+    bottom: 30px;
+    flex-direction: column;
+  }
+  .footer-btn{
+    width: calc(100% - 30px);
+  }
+  .footer-btn button{
+    margin-top: 10px;
+  }
+}

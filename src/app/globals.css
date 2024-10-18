@@ -18,6 +18,24 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  
+}
+.signup-container{
+  width: 90%;
+  height: 86vh;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: auto;
+  justify-content: center;
+}
+.sign-heading{
+  font-size: 25px;
+  font-weight: bold;
+}
+.main-container{
+  background-color: #f2f3f5;
 }
 
 @layer utilities {
