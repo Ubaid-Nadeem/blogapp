@@ -4,7 +4,7 @@ import { getAuth, updateProfile } from "firebase/auth";
 import { useAuthContext } from "../context/context";
 import { ReactNode, useEffect, useState } from "react";
 import Loading from "../component/loading";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseconfiq";
 
@@ -15,16 +15,16 @@ type HomeProtectedRoutesTypes = {
 export default function HomeProtectedRoutes({
   children,
 }: HomeProtectedRoutesTypes) {
-  const { user, setUser } = useAuthContext()!;
+  const { user } = useAuthContext()!;
   const [isLoading, setIsloading] = useState(true);
-  const route = useRouter();
+  // const route = useRouter();
   const auth = getAuth();
 
   useEffect(() => {
-    let activeUser = localStorage.getItem("loggedIn");
+    const activeUser = localStorage.getItem("loggedIn");
 
     if (activeUser) {
-      let formateData = JSON.parse(activeUser);
+      const formateData = JSON.parse(activeUser);
 
       if (formateData.name == null) {
         getUser();
@@ -37,7 +37,7 @@ export default function HomeProtectedRoutes({
   }, [user]);
 
   async function getUser() {
-    console.log("run");
+    
     const docRef = doc(db, "users", auth.currentUser?.uid as string);
     const docSnap = await getDoc(docRef);
 
@@ -46,11 +46,13 @@ export default function HomeProtectedRoutes({
         displayName: docSnap.data().name,
       })
         .then(() => {
-          let userClone = { ...user };
+          const userClone = { ...user };
           userClone.name = docSnap.data().name;
           setIsloading(false);
         })
-        .catch((error) => {});
+        .catch((error) => {
+          console.log(error)
+        });
     }
   }
 

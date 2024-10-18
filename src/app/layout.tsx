@@ -3,7 +3,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./component/navbar";
 import AuthContextProvider from "./context/context";
-import HomeProtectedRoutes from "./HOC/homepage-protected";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

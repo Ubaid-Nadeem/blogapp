@@ -26,7 +26,7 @@ export default function AuthComponent({ authType }: any) {
 
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
-  const { user, setUser } = useAuthContext()!;
+  const { setUser } = useAuthContext()!;
   const route = useRouter();
   const errors = [
     {
@@ -100,27 +100,27 @@ export default function AuthComponent({ authType }: any) {
     }
   }
 
- function googleLogin() {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        let newUser = result.user;
-        let obj = {
-          name: newUser.displayName,
-          email: newUser.email,
-          uid: newUser.uid,
-          photoURL: newUser.photoURL,
-          isVerified: newUser.emailVerified,
-        };
+//  function googleLogin() {
+//     signInWithPopup(auth, provider)
+//       .then((result) => {
+//         let newUser = result.user;
+//         let obj = {
+//           name: newUser.displayName,
+//           email: newUser.email,
+//           uid: newUser.uid,
+//           photoURL: newUser.photoURL,
+//           isVerified: newUser.emailVerified,
+//         };
 
-        let docRef = doc(db, "users", result.user.uid);
-        checkingUserInDb(docRef, result.user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
-      });
-  }
+//         let docRef = doc(db, "users", result.user.uid);
+//         checkingUserInDb(docRef, result.user);
+//       })
+//       .catch((error) => {
+//         const errorCode = error.code;
+//         const errorMessage = error.message;
+//         console.log(errorMessage);
+//       });
+//   }
 
   async function createUser(user: any, name: string) {
     try {
@@ -140,13 +140,13 @@ export default function AuthComponent({ authType }: any) {
     }
   }
 
-  async function checkingUserInDb(docRef: any, user: any) {
-    let currentUser = await getDoc(docRef);
+  // async function checkingUserInDb(docRef: any, user: any) {
+  //   let currentUser = await getDoc(docRef);
 
-    if (!currentUser.data()) {
-      createUser(user, user.displayName);
-    }
-  }
+  //   if (!currentUser.data()) {
+  //     createUser(user, user.displayName);
+  //   }
+  // }
 
   function SignUpWithGmailAndPassword(
     email: string,

@@ -13,13 +13,13 @@ type AuthProtectedRoutesTypes = {
 export default function AuthProtectedRoutes({
   children,
 }: AuthProtectedRoutesTypes) {
-  const { user, setUser } = useAuthContext()!;
+  const { user } = useAuthContext()!;
   const [isLoading, setIsloading] = useState(true);
   const route = useRouter();
-  const auth = getAuth();
+  // const auth = getAuth();
 
   useEffect(() => {
-    let activeUser = localStorage.getItem("loggedIn");
+    const activeUser = localStorage.getItem("loggedIn");
     if (activeUser) {
       route.push("/");
     } else {

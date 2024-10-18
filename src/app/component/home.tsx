@@ -1,6 +1,4 @@
 "use client";
-import Image from "next/image";
-import logo from "../../../public/bg3.webp"
 import "./home.css"
 import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "../firebase/firebaseconfiq";
@@ -12,7 +10,7 @@ export default function HomeComponent() {
 
   const provider = new GoogleAuthProvider();
   const route = useRouter();
-  const { user, setUser } = useAuthContext()!;
+  const {  setUser } = useAuthContext()!;
 
 
 
