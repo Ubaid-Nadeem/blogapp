@@ -19,7 +19,7 @@ type ChildrenType = {
 type ContextType = {
   user: UserType | null;
   setUser: (user: UserType | null) => void;
-  theme: string | null;
+  theme: string;
   setTheme: (theme: string) => void;
 };
 

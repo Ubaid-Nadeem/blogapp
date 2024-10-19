@@ -39,10 +39,12 @@ export default function Navbar() {
             <img
               style={{
                 width: "50px",
+                backgroundColor : "#ffff",
+                padding:"5px",
                 // height : "50px",
-                // borderRadius : "100%"
+                borderRadius : "100%"
               }}
-              src={'https://www.freeiconspng.com/thumbs/blogger-logo-icon-png/blogger-logo-icon-png-10.png'}
+              src={'https://www.freeiconspng.com/thumbs/blogger-logo-icon-png/blogger-logo-icon-png-13.png'}
               alt=""
             />
           </a>

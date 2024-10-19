@@ -2,7 +2,7 @@
   width: 100%;
   background-color: aqua;
   height: 100vh;
-  background-image: url("../../../public/bg3.webp");
+  /* background-image: url("../../../public/bg3.webp"); */
 
   background: rgb(255, 255, 255);
   background: linear-gradient(
@@ -10,7 +10,7 @@
       rgba(0, 0, 0, 0.9) 30%,
       rgb(255, 255, 255, 0.5) 100%
     ),
-    url("../../../public/bg3.webp");
+    url("https://wallpapers.com/images/featured/forest-view-background-crqeo6nhz5gr9wks.jpg");
   background-position: center;
   background-size: cover;
 }
