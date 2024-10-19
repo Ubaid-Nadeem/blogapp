@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "./component/navbar";
-import AuthContextProvider from "./context/context";
+import AuthContextProvider, { useAuthContext } from "./context/context";
+import FooterSection from "./component/footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,17 +26,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // const {theme} = useAuthContext()!;
+
   return (
     <html lang="en" data-theme="light">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          data-theme="light"
+        data-theme={"cupcake"}
       >
         <AuthContextProvider>
-        <Navbar/>
-       
-        {children}
-        
+          <Navbar />
+
+          {children}
+
+          <FooterSection />
         </AuthContextProvider>
       </body>
     </html>

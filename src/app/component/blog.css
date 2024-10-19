@@ -1,0 +1,16 @@
+.blog-card{
+    width: 50%;
+}
+.blog-card-container{
+    display: flex;
+    gap: 10px;
+}
+@media only screen and (max-width: 600px) {
+    .blog-card{
+        width: 100%;
+    }
+    
+.blog-card-container{
+   flex-direction: column;
+}
+}

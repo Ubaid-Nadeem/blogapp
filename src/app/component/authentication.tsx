@@ -66,12 +66,11 @@ export default function AuthComponent({ authType }: any) {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-        
+
           let [sortError] = errors.filter(
             (err) => err.firebaseError == errorMessage
           );
 
-       
           setErrorMsg(sortError.userError);
           setError(true);
         });
@@ -100,27 +99,27 @@ export default function AuthComponent({ authType }: any) {
     }
   }
 
-//  function googleLogin() {
-//     signInWithPopup(auth, provider)
-//       .then((result) => {
-//         let newUser = result.user;
-//         let obj = {
-//           name: newUser.displayName,
-//           email: newUser.email,
-//           uid: newUser.uid,
-//           photoURL: newUser.photoURL,
-//           isVerified: newUser.emailVerified,
-//         };
+  //  function googleLogin() {
+  //     signInWithPopup(auth, provider)
+  //       .then((result) => {
+  //         let newUser = result.user;
+  //         let obj = {
+  //           name: newUser.displayName,
+  //           email: newUser.email,
+  //           uid: newUser.uid,
+  //           photoURL: newUser.photoURL,
+  //           isVerified: newUser.emailVerified,
+  //         };
 
-//         let docRef = doc(db, "users", result.user.uid);
-//         checkingUserInDb(docRef, result.user);
-//       })
-//       .catch((error) => {
-//         const errorCode = error.code;
-//         const errorMessage = error.message;
-//         console.log(errorMessage);
-//       });
-//   }
+  //         let docRef = doc(db, "users", result.user.uid);
+  //         checkingUserInDb(docRef, result.user);
+  //       })
+  //       .catch((error) => {
+  //         const errorCode = error.code;
+  //         const errorMessage = error.message;
+  //         console.log(errorMessage);
+  //       });
+  //   }
 
   async function createUser(user: any, name: string) {
     try {
@@ -282,7 +281,12 @@ export default function AuthComponent({ authType }: any) {
       </button> */}
 
       {authType != "signup" ? (
-        <p className="text-center">
+        <p
+          className="text-center"
+          onClick={() => {
+            setIsloading(true);
+          }}
+        >
           Does have not an account? <Link href={"/signup"}>Signup here.</Link>
         </p>
       ) : (

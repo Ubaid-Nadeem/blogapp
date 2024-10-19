@@ -5,7 +5,7 @@ export default function Login() {
 
   return <>
   <AuthProtectedRoutes>
-  <AuthComponent authType="login" />;
+  <AuthComponent authType="login" />
   </AuthProtectedRoutes>
   </> 
 }

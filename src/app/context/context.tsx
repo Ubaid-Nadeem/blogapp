@@ -19,6 +19,8 @@ type ChildrenType = {
 type ContextType = {
   user: UserType | null;
   setUser: (user: UserType | null) => void;
+  theme: string | null;
+  setTheme: (theme: string) => void;
 };
 
 const AuthContext = createContext<ContextType | null>(null);
@@ -26,6 +28,8 @@ const AuthContext = createContext<ContextType | null>(null);
 export default function AuthContextProvider({ children }: ChildrenType) {
   const [user, setUser] = useState<UserType | null>(null);
   const [isLoading, setIsloading] = useState(false);
+  const [theme, setTheme] = useState("light");
+
   const route = useRouter();
 
   useEffect(() => {
@@ -47,7 +51,7 @@ export default function AuthContextProvider({ children }: ChildrenType) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, theme, setTheme }}>
       {children}
     </AuthContext.Provider>
   );
