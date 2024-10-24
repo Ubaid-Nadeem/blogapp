@@ -1,7 +1,7 @@
 .home-container {
   width: 100%;
   background-color: aqua;
-  height: 100vh;
+  height: calc(100vh - 66px);
   /* background-image: url("../../../public/bg3.webp"); */
 
   background: rgb(255, 255, 255);

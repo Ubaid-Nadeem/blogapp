@@ -49,6 +49,25 @@ export default function MainPage() {
         </h2>
         <h1 className="text-2xl font-bold m-4 mt-0">Recommendation</h1>
         <Carousel />
+      
+          <div className="dropdown dropdown-hover  dropdown-right mt-5">
+            <div tabIndex={0} role="button" className="btn m-1">
+             Filter Category
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            >
+             
+              <li>
+                <a>Movies</a>
+              </li>
+              <li>
+                <a>Codding</a>
+              </li>
+            </ul>
+          </div>
+       
         <h2 className="text-2xl font-bold   m-4">Trending</h2>
         <AllBlogs />
       </div>
