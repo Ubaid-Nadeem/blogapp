@@ -6,7 +6,7 @@ export default function FooterSection() {
   const { user } = useAuthContext()!;
 
   return (
-    user && (
+    (
       <div>
         <footer className="footer bg-neutral text-neutral-content p-10">
           <aside>

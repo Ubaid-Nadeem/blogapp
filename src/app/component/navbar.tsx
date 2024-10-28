@@ -6,13 +6,14 @@ import { useEffect } from "react";
 import "../globals.css";
 import { useRouter } from "next/navigation";
 import logo from "../../../public/image.png";
+import Bloggerlogo from "../../../public/bloggerlogo.png";
+import Image from "next/image";
+
 export default function Navbar({ isDarkTheme }: any) {
   const { user, setUser, theme, setTheme } = useAuthContext()!;
   const route = useRouter();
-  console.log(isDarkTheme);
-  useEffect(() => {
-    console.log(user?.photoURL);
-  }, [user]);
+
+  useEffect(() => {}, [user]);
 
   function logOut() {
     const auth = getAuth();
@@ -27,15 +28,23 @@ export default function Navbar({ isDarkTheme }: any) {
   }
 
   return (
-    <div className="navbar  bg-base-300">
+    <div
+      className="navbar  bg-base-300"
+      style={{
+        padding: "0 20px",
+      }}
+    >
       <div className="flex-1">
         <a
+          style={{
+            cursor: "pointer",
+          }}
           className=" text-xl"
           onClick={() => {
             route.push("/");
           }}
         >
-          <img
+          <Image
             style={{
               width: "50px",
               backgroundColor: "#ffff",
@@ -43,9 +52,7 @@ export default function Navbar({ isDarkTheme }: any) {
               // height : "50px",
               borderRadius: "100%",
             }}
-            src={
-              "https://www.freeiconspng.com/thumbs/blogger-logo-icon-png/blogger-logo-icon-png-13.png"
-            }
+            src={Bloggerlogo}
             alt=""
           />
         </a>
@@ -97,7 +104,13 @@ export default function Navbar({ isDarkTheme }: any) {
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
               >
                 <li>
-                  <a className="justify-between">
+                  <a
+                    className="justify-between"
+                    onClick={() => {
+                      
+                      route.push("/profile");
+                    }}
+                  >
                     Profile
                     <span className="badge">New</span>
                   </a>

@@ -31,10 +31,10 @@ export default function RootLayout({
   // const {theme} = useAuthContext()! ;
 
   return (
-    <html lang="en" data-theme={"cupcake dark"}>
+    <html lang="en" data-theme={"light dark"}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        data-theme={"cupcake dark"}
+        data-theme={"light dark"}
       >
         <AuthContextProvider>
           <Navbar />

@@ -19,53 +19,7 @@ export default function HomeComponent() {
     setIsloading(false);
   }, []);
 
-  function googleLogin() {
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        let newUser = result.user;
-        let obj = {
-          name: newUser.displayName,
-          email: newUser.email,
-          uid: newUser.uid,
-          photoURL: newUser.photoURL,
-          isVerified: newUser.emailVerified,
-        };
-
-        let docRef = doc(db, "users", result.user.uid);
-        checkingUserInDb(docRef, result.user);
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
-      });
-  }
-
-  async function createUser(user: any, name: string) {
-    try {
-      let obj = {
-        uid: user.uid,
-        email: user.email,
-        name: name,
-        isVerified: user.emailVerified,
-        photoURL: user.photoURL,
-      };
-      await setDoc(doc(db, "users", user.uid), obj);
-      localStorage.setItem("loggedIn", JSON.stringify(obj));
-      setUser(obj);
-      route.push("/");
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function checkingUserInDb(docRef: any, user: any) {
-    let currentUser = await getDoc(docRef);
-
-    if (!currentUser.data()) {
-      createUser(user, user.displayName);
-    }
-  }
+  
 
   return isLoading ? (
     <Loading />
@@ -84,15 +38,7 @@ export default function HomeComponent() {
           >
             SIGN IN
           </button>
-          <button
-            className="btn  btn-accent"
-            onClick={() => {
-              setIsloading(true);
-              googleLogin();
-            }}
-          >
-            CONTINUE WITH GOOGLE
-          </button>
+        
         </div>
       </div>
     </div>

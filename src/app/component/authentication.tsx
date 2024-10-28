@@ -170,6 +170,36 @@ export default function AuthComponent({ authType }: any) {
       });
   }
 
+  function googleLogin() {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        let newUser = result.user;
+        let obj = {
+          name: newUser.displayName,
+          email: newUser.email,
+          uid: newUser.uid,
+          photoURL: newUser.photoURL,
+          isVerified: newUser.emailVerified,
+        };
+
+        let docRef = doc(db, "users", result.user.uid);
+        checkingUserInDb(docRef, result.user);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+      });
+  }
+
+  async function checkingUserInDb(docRef: any, user: any) {
+    let currentUser = await getDoc(docRef);
+
+    if (!currentUser.data()) {
+      createUser(user, user.displayName);
+    }
+  }
+
   return isLoading ? (
     <Loading />
   ) : (
@@ -276,18 +306,29 @@ export default function AuthComponent({ authType }: any) {
         </button>
       )}
 
-      {/* <button className="btn btn-accent" onClick={googleLogin}>
+      <button className="btn btn-accent" onClick={googleLogin}>
+        <img
+          src="https://cdn4.iconfinder.com/data/icons/logos-brands-7/512/google_logo-google_icongoogle-512.png"
+          style={{
+            width: "20px",
+            height: "20px",
+          }}
+          alt=""
+        />
         Continoue with Google
-      </button> */}
+      </button>
 
       {authType != "signup" ? (
-        <p
-          className="text-center"
-          onClick={() => {
-            setIsloading(true);
-          }}
-        >
-          Does have not an account? <Link href={"/signup"}>Signup here.</Link>
+        <p className="text-center">
+          Does have not an account?{" "}
+          <Link
+            onClick={() => {
+              setIsloading(true);
+            }}
+            href={"/signup"}
+          >
+            Signup here.
+          </Link>
         </p>
       ) : (
         <p
