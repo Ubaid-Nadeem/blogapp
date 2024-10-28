@@ -6,15 +6,32 @@ import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase/firebaseconfiq";
+import { useAuthContext } from "../context/context";
 
 export default function MainPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const route = useRouter();
+  const { setBlogs } = useAuthContext()!;
 
   useEffect(() => {
     setIsLoading(false);
+    getBlogs();
   }, []);
 
-  const route = useRouter();
+  async function getBlogs() {
+    let blogClone: any[] = [];
+    let docRef = collection(db, "blogs");
+    let data = await getDocs(docRef);
+    data.forEach((doc) => {
+      blogClone.push({
+        ...doc.data(),
+        id: doc.id,
+      });
+    });
+    setBlogs(blogClone);
+  }
 
   return isLoading ? (
     <Loading />
@@ -42,21 +59,6 @@ export default function MainPage() {
         </Fab>
       </div>
 
-      {/* form */}
-
-      {/* <dialog id="my_modal_3" className="modal">
-        <div className="modal-box">
-          <form method="dialog">
-           
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-          <h3 className="font-bold text-lg">Hello!</h3>
-          <p className="py-4">Press ESC key or click on ✕ button to close</p>
-        </div>
-      </dialog> */}
-
       <h2
         className=" ml-4 mt-4 mb-2 "
         style={{ color: "#969ca0", fontSize: "20px" }}
@@ -69,10 +71,21 @@ export default function MainPage() {
       <div className="p-3">
         <select className="select select-bordered w-full max-w-xs">
           <option disabled selected>
-           Select Category
+            Select Category
           </option>
-          <option>Han Solo</option>
-          <option>Greedo</option>
+          <option>Lifestyle</option>
+          <option>Personal blogs</option>
+          <option>Food</option>
+          <option>Fitness</option>
+          <option>Travel</option>
+          <option>Fashion</option>
+          <option>News</option>
+          <option>Blogging</option>
+          <option>Video Game</option>
+          <option>Music</option>
+          <option>Sports</option>
+          <option>Marketing</option>
+          <option>Politics</option>
         </select>
       </div>
 

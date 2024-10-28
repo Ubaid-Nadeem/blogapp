@@ -19,11 +19,11 @@ export default function CreateBlogProtectedRoutes({
   const route = useRouter();
 
   useEffect(() => {
-    if (user == null) {
+    const activeUser = localStorage.getItem("loggedIn");
+    if (activeUser) {
+      setIsloading(false);
+    } else {
       route.push("/login");
-    }
-    else{
-        setIsloading(false)
     }
   }, [user]);
 

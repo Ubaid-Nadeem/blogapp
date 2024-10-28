@@ -5,6 +5,22 @@ import { Image, Upload, notification } from "antd";
 import type { GetProp, UploadFile, UploadProps, FormProps } from "antd";
 import Loading from "../component/loading";
 import CreateBlogProtectedRoutes from "../HOC/createblog-protected";
+import {
+  addDoc,
+  collection,
+  doc,
+  getFirestore,
+  setDoc,
+} from "firebase/firestore";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase/firebaseconfiq";
+import { getAuth } from "firebase/auth";
 
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
@@ -26,10 +42,75 @@ export default function NewBlog() {
   const [content, setContent] = useState("");
   const [showError, setShowError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isActive, setIsActive] = useState(false);
+
+  const storage = getStorage();
+  const db = getFirestore(app);
+  const auth = getAuth();
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
+
+  // save picture in data base
+
+  function UploadImage() {
+    let extension = fileList[0]?.name.split(".")[1];
+    let uuid = crypto.randomUUID();
+    let file = fileList[0].originFileObj;
+    let PhotoRef = `${uuid}.${extension}`;
+
+    const storageRef = ref(storage, `blogimages/${PhotoRef}`);
+
+    const uploadTask = uploadBytesResumable(storageRef, file as FileType);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          SaveBlogDB(downloadURL);
+        });
+      }
+    );
+  }
+
+  // save blog in data base
+
+  async function SaveBlogDB(downloadURL: string | null) {
+    let docRef = collection(db, "blogs");
+    let currentTime = new Date();
+    let blog = {
+      title,
+      category,
+      content,
+      imageURL: downloadURL,
+      uid: auth.currentUser?.uid,
+      likes: 0,
+      date: currentTime,
+      userName: auth.currentUser?.displayName,
+      profilePicture: auth.currentUser?.photoURL,
+    };
+    try {
+      await addDoc(docRef, blog);
+
+      setTitle("");
+      setCategory("Category");
+      setContent("");
+      setFileList([]);
+
+      uploaded("topRight");
+      setIsActive(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
@@ -41,7 +122,6 @@ export default function NewBlog() {
   };
 
   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-    console.log(newFileList);
     setFileList(newFileList);
   };
 
@@ -68,30 +148,24 @@ export default function NewBlog() {
     });
   };
 
+  // function call on create btn
+
   function createBlog() {
     if (title && category && content) {
-      let blog = {
-        title,
-        category,
-        content,
-        image: fileList[0] || null,
-      };
-      console.log(blog);
-
-      setTitle("");
-      setCategory("Category");
-      setContent("");
-      setFileList([]);
+      setIsActive(true);
       uploading("topRight");
-
-      setTimeout(() => {
-        uploaded("topRight");
-      }, 3000);
+      if (fileList[0]) {
+        UploadImage();
+      } else {
+        SaveBlogDB(null);
+      }
     } else {
       ErrorDuration();
       console.log("Fill all field");
     }
   }
+
+  // show and hide error
 
   function ErrorDuration() {
     setShowError(true);
@@ -161,8 +235,19 @@ export default function NewBlog() {
             <option disabled selected value={"Category"}>
               Select Category
             </option>
-            <option>Han Solo</option>
-            <option>Greedo</option>
+            <option>Lifestyle</option>
+            <option>Personal blogs</option>
+            <option>Food</option>
+            <option>Fitness</option>
+            <option>Travel</option>
+            <option>Fashion</option>
+            <option>News</option>
+            <option>Blogging</option>
+            <option>Video Game</option>
+            <option>Music</option>
+            <option>Sports</option>
+            <option>Marketing</option>
+            <option>Politics</option>
           </select>
 
           <textarea
@@ -179,7 +264,11 @@ export default function NewBlog() {
               <span>Error : Please fill all fields</span>
             </div>
           )}
-          <button className="btn btn-neutral" onClick={createBlog}>
+          <button
+            className="btn btn-neutral"
+            onClick={createBlog}
+            disabled={isActive}
+          >
             Create blog
           </button>
         </div>
