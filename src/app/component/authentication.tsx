@@ -205,7 +205,7 @@ export default function AuthComponent({ authType }: any) {
   ) : (
     <div className="signup-container">
       <h1 className="text-center sign-heading">
-        {authType == "signup" ? "Create an account" : "Log in"}
+        {authType == "signup" ? "Create an account" : "Welcome Back"}
       </h1>
       <label className="input input-bordered flex items-center gap-2">
         <svg
