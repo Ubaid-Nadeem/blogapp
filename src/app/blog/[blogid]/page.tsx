@@ -37,10 +37,12 @@ export default function BlogDetails({ params }: any) {
         <div className="p-6">
           {" "}
           <div
-            className="mb-5 p-2  bg-base-300"
+            className="mb-5 p-2  "
             style={{
               display: "flex",
               alignItems: "center",
+              borderBottom : "1px solid",
+              paddingBottom : "20px"
              
             }}
           >
@@ -49,8 +51,8 @@ export default function BlogDetails({ params }: any) {
               alt=""
               style={{
                 borderRadius: "100%",
-                width: "50px",
-                height: "50px",
+                width: "30px",
+                height: "30px",
               }}
             />
             <p

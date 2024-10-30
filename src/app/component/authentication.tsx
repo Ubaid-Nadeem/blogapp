@@ -8,6 +8,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
+  updateProfile 
 } from "firebase/auth";
 import "../globals.css";
 import Loading from "./loading";
@@ -28,6 +29,8 @@ export default function AuthComponent({ authType }: any) {
   const provider = new GoogleAuthProvider();
   const { setUser } = useAuthContext()!;
   const route = useRouter();
+
+  
   const errors = [
     {
       firebaseError: "Firebase: Error (auth/invalid-email).",
@@ -155,7 +158,21 @@ export default function AuthComponent({ authType }: any) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        console.log(user,name)
         createUser(user, name);
+
+        updateProfile(auth.currentUser!, {
+          displayName: name, 
+          photoURL: "https://cdn-icons-png.flaticon.com/512/3177/3177440.png",
+
+        }).then(() => {
+          // Profile updated!
+          // ...
+        }).catch((error) => {
+          // An error occurred
+          // ...
+        });
+
       })
       .catch((error) => {
         const errorCode = error.code;
