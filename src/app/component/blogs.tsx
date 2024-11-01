@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import "./blog.css";
 import { useAuthContext } from "../context/context";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AllBlogs() {
   const { blogs } = useAuthContext()!;
@@ -29,29 +30,32 @@ export default function AllBlogs() {
               key={index}
             >
               <div className="card-body p-4 blog-card-content">
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    marginTop: "10px",
-                    flexDirection: "row",
-                    fontWeight: "bold",
-                  }}
-                  className="blog-card-username"
-                >
-                  <div className="avatar">
-                    <div className="w-7 rounded-full">
-                      <img
-                        src={
-                          item.profilePicture ||
-                          "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
-                        }
-                      />
+                <Link href={`/u/${item.uid}`}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                      marginTop: "10px",
+                      flexDirection: "row",
+                      fontWeight: "bold",
+                    }}
+                    className="blog-card-username"
+                  >
+                    <div className="avatar">
+                      <div className="w-7 rounded-full">
+                        <img
+                          src={
+                            item.profilePicture ||
+                            "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"
+                          }
+                        />
+                      </div>
                     </div>
+                    <p>{item.userName}</p>
                   </div>
-                  <p>{item.userName}</p>
-                </div>
+                </Link>
+
                 <h2 className="card-title ">{item.title}</h2>
 
                 <div

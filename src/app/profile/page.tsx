@@ -1,12 +1,41 @@
 "use client";
-import { getAuth } from "firebase/auth";
+import { getAuth, signOut } from "firebase/auth";
 import { useEffect } from "react";
 import { useAuthContext } from "../context/context";
 import ProfileProtectedRoutes from "../HOC/profile-protected";
+import { Modal } from "antd";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 
 export default function Profile() {
   const auth = getAuth();
-  const { user } = useAuthContext()!;
+  const { user, setUser } = useAuthContext()!;
+  const { confirm } = Modal;
+
+  function logOut() {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        setUser(null);
+        localStorage.removeItem("loggedIn");
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  }
+
+  const showDeleteConfirm = () => {
+    confirm({
+      title: "Are you sure you want to log out?",
+      icon: <ExclamationCircleFilled />,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        logOut();
+      },
+      onCancel() {},
+    });
+  };
 
   useEffect(() => {
     // console.log(auth.currentUser);
@@ -88,6 +117,16 @@ export default function Profile() {
           </li>
           <li>
             <a>Password</a>
+          </li>
+          <li
+            style={{
+              color: "red",
+            }}
+            onClick={() => {
+              showDeleteConfirm();
+            }}
+          >
+            <a>Log out</a>
           </li>
         </ul>
       </div>

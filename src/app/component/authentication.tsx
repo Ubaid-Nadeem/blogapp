@@ -131,7 +131,7 @@ export default function AuthComponent({ authType }: any) {
         email: user.email,
         name: name,
         isVerified: user.emailVerified,
-        photoURL: user.photoURL,
+        photoURL: user.photoURL || "https://cdn-icons-png.flaticon.com/512/3177/3177440.png",
       };
       await setDoc(doc(db, "users", user.uid), obj);
       localStorage.setItem("loggedIn", JSON.stringify(obj));

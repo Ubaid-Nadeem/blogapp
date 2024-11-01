@@ -6,12 +6,14 @@ import { doc, DocumentData, getDoc } from "firebase/firestore";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import "./style.css";
+import Link from "next/link";
 
 export default function BlogDetails({ params }: any) {
   const [isloading, setIsloading] = useState(true);
   const [blog, setBlog] = useState<DocumentData | undefined>();
   const [isFavorite, setIsFavorite] = useState(true);
-  
+  const [isCopied, setIsCopied] = useState(false);
+  const [textURL, setTextURL] = useState("");
 
   useEffect(() => {
     getBlog();
@@ -29,21 +31,35 @@ export default function BlogDetails({ params }: any) {
     }
   }
 
+  function copyURL() {
+    navigator.clipboard.writeText(textURL);
+    setIsCopied(true);
+  }
+  function getURL() {
+    setTextURL(location.href);
+  }
+
   return (
     <div>
       {isloading ? (
         <Loading />
       ) : (
-        <div className="p-6">
+        <div
+          className="p-6"
+          style={{
+            maxWidth: "600px",
+            margin: "auto",
+          }}
+        >
           {" "}
           <div
-            className="mb-5 p-2  "
+            className="mb-5 p-3  bg-base-200"
             style={{
               display: "flex",
               alignItems: "center",
-              borderBottom : "1px solid",
-              paddingBottom : "20px"
-             
+              // borderBottom: "1px solid",
+              // paddingBottom: "20px",
+              borderRadius: "5px",
             }}
           >
             <img
@@ -55,18 +71,27 @@ export default function BlogDetails({ params }: any) {
                 height: "30px",
               }}
             />
-            <p
-              style={{
-                fontWeight: "bold",
-                marginLeft: "10px",
-              }}
-            >
-              {blog?.userName}
-            </p>
+            <Link href={`/u/${blog?.uid}`}>
+              <p
+                style={{
+                  fontWeight: "bold",
+                  marginLeft: "10px",
+                }}
+              >
+                {blog?.userName}
+              </p>
+            </Link>
           </div>
-          <img src={blog?.imageURL} alt="" className="blogImage" style={{
-            width : "300px"
-          }}/>
+          <img
+            src={blog?.imageURL}
+            alt=""
+            className="blogImage"
+            style={{
+              width: "300px",
+              borderRadius: "10px",
+              margin: "auto",
+            }}
+          />
           <h1
             className="text-2xl text-bold"
             style={{
@@ -99,8 +124,57 @@ export default function BlogDetails({ params }: any) {
             </svg>
             <div className="badge">0</div>
           </button>
+          <label htmlFor="my_modal_6" className="btn ml-2" onClick={getURL}>
+            <img
+              style={{
+                width: "22px",
+              }}
+              src="https://pngimg.com/uploads/share/share_PNG16.png"
+              alt=""
+            />
+          </label>
         </div>
       )}
+
+      {/* Put this part before </body> tag */}
+      <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+      <div className="modal" role="dialog">
+        <div className="modal-box">
+          <h3 className="text-lg font-bold">
+            URL
+            <img
+              style={{
+                width: "25px",
+                display: "inline",
+              }}
+              src="https://static.vecteezy.com/system/resources/previews/015/152/952/non_2x/url-icon-design-for-web-interfaces-and-applications-png.png"
+              alt=""
+            />
+          </h3>
+
+          <input
+            type="text"
+            placeholder={textURL}
+            className="input input-bordered mt-5 copy-text-feild"
+            disabled
+          />
+          <button
+            className="btn btn-primary copy-btn "
+            style={{
+              display: "inline",
+            }}
+            onClick={copyURL}
+          >
+            {isCopied ? "Copied!" : "Copy"}
+          </button>
+
+          <div className="modal-action">
+            <label htmlFor="my_modal_6" className="btn">
+              Close!
+            </label>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
