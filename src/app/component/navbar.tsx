@@ -89,7 +89,7 @@ export default function Navbar({ isDarkTheme }: any) {
                 <div className="w-10 rounded-full">
                   <img
                     alt="Tailwind CSS Navbar component"
-                    src={auth.currentUser?.photoURL || ""}
+                    src={auth.currentUser?.photoURL || "https://cdn-icons-png.flaticon.com/512/9385/9385289.png"}
                   />
                 </div>
               </div>

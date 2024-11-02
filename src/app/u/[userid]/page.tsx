@@ -85,6 +85,7 @@ export default function User({ params: { userid } }: any) {
               <img
                 style={{
                   width: "100px",
+                  height : "100px",
                   padding: "5px",
                   border: "5px solid #e5e7eb",
                   borderRadius: "100%",

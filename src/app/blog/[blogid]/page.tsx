@@ -138,6 +138,7 @@ export default function BlogDetails({ params }: any) {
 
       {/* Put this part before </body> tag */}
       <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+
       <div className="modal" role="dialog">
         <div className="modal-box">
           <h3 className="text-lg font-bold">

@@ -6,7 +6,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Loading from "./loading";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
 import { db } from "../firebase/firebaseconfiq";
 import { useAuthContext } from "../context/context";
 
@@ -23,7 +23,9 @@ export default function MainPage() {
   async function getBlogs() {
     let blogClone: any[] = [];
     let docRef = collection(db, "blogs");
-    let data = await getDocs(docRef);
+    const q = query(docRef, orderBy("date", "desc"), limit(10));
+    let data = await getDocs(q);
+
     data.forEach((doc) => {
       blogClone.push({
         ...doc.data(),
