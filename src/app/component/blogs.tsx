@@ -21,7 +21,7 @@ export default function AllBlogs() {
 
   return (
     <div
-      className=""
+      
       style={{
         display: "flex",
         gap: "15px",
@@ -30,13 +30,22 @@ export default function AllBlogs() {
       }}
     >
       {isloading ? (
-        <span className="">Loading....</span>
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            height: "100px",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <span className="loading loading-spinner text-info  loading-lg"></span>
+        </div>
       ) : (
         blogs.map((item, index) => {
-          let cuurentDate = new Date();
           let blogDate = new Date(item.date.toDate().getTime());
           let a = blogDate.toDateString();
-         
+
           return (
             <div
               className="card card-compact bg-base-100  shadow-xl blog-card bg-base-200 my-2 mb-5"
@@ -87,13 +96,19 @@ export default function AllBlogs() {
                     }}
                     onClick={() => {
                       route.push(`/blog/${item.id}`);
+                      setIsloading(true);
                     }}
                   >
                     Read Blog &rarr;
                   </span>
                 </div>
               </div>
-              <Link href={`/u/${item.uid}`}>
+              <Link
+                href={`/u/${item.uid}`}
+                onClick={() => {
+                  setIsloading(true);
+                }}
+              >
                 <div
                   style={{
                     display: "flex",

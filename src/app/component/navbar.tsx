@@ -124,6 +124,17 @@ export default function Navbar({ isDarkTheme }: any) {
                     <span className="badge">New</span>
                   </a>
                 </li>
+                <li>
+                  <a
+                    className="justify-between"
+                    onClick={() => {
+                      route.push("/newblog");
+                    }}
+                  >
+                    Create New Blog
+                   
+                  </a>
+                </li>
                 <li
                   onClick={() => {
                     showDeleteConfirm();

@@ -14,6 +14,7 @@ export default function BlogDetails({ params }: any) {
   const [isFavorite, setIsFavorite] = useState(true);
   const [isCopied, setIsCopied] = useState(false);
   const [textURL, setTextURL] = useState("");
+  const [blogDate, setBlogDate] = useState("");
 
   useEffect(() => {
     getBlog();
@@ -24,6 +25,12 @@ export default function BlogDetails({ params }: any) {
     try {
       let blog = await getDoc(docRef);
       console.log(blog.data());
+      if (blog.data()) {
+        let blogDate = new Date(blog.data()?.date.toDate().getTime());
+        let a = blogDate.toDateString();
+        setBlogDate(a);
+      }
+
       setBlog(blog.data());
       setIsloading(false);
     } catch (e) {
@@ -53,7 +60,7 @@ export default function BlogDetails({ params }: any) {
         >
           {" "}
           <div
-            className="mb-5 p-3  bg-base-200"
+            className="mb-5 "
             style={{
               display: "flex",
               alignItems: "center",
@@ -71,16 +78,28 @@ export default function BlogDetails({ params }: any) {
                 height: "30px",
               }}
             />
-            <Link href={`/u/${blog?.uid}`}>
+            <div>
+              <Link href={`/u/${blog?.uid}`}>
+                <p
+                  style={{
+                    fontWeight: "bold",
+                    marginLeft: "10px",
+                    fontSize : "14px"
+                  }}
+                >
+                  {blog?.userName}
+                </p>
+              </Link>
               <p
+                className="ml-3"
                 style={{
-                  fontWeight: "bold",
-                  marginLeft: "10px",
+                  color: "gray",
+                  fontSize: "11px",
                 }}
               >
-                {blog?.userName}
+                {blogDate}
               </p>
-            </Link>
+            </div>
           </div>
           <img
             src={blog?.imageURL}
