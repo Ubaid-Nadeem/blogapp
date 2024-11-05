@@ -114,7 +114,7 @@ export default function BlogDetails({ params }: any) {
               fontSize: "14px",
             }}
           >
-            This Content is'nt available
+            This Content is not available
           </p>
         </div>
       ) : (
