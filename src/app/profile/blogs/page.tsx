@@ -3,23 +3,58 @@
 import { useAuthContext } from "@/app/context/context";
 import { auth, db } from "@/app/firebase/firebaseconfiq";
 import {
+  addDoc,
   collection,
+  doc,
   DocumentData,
   getDocs,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import "./style.css";
 import { useRouter } from "next/navigation";
 import Loading from "@/app/component/loading";
+import { Image, Upload, notification } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import type { GetProp, UploadFile, UploadProps, FormProps } from "antd";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+  deleteObject,
+} from "firebase/storage";
+
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export default function MyBlogs() {
   const { user, setUser } = useAuthContext()!;
-  const [allBlogs, setAllBlogs] = useState<DocumentData | []>([]);
+  const [allBlogs, setAllBlogs] = useState<any>([]);
   const [isLoading, setIsloading] = useState(true);
+  const getBase64 = (file: FileType): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Category");
+  const [content, setContent] = useState("");
+  const [imgName, setImgName] = useState("");
 
+  const [blogIndex, setBlogIndex] = useState<number>(0);
+  const [blogID, setblogID] = useState<string>("");
+
+  const [isActive, setIsActive] = useState(false);
+  const [isUpdatedBlog, setIsUpadtedBlog] = useState(false);
   const route = useRouter();
+  const storage = getStorage();
 
   useEffect(() => {
     getBlogs();
@@ -42,6 +77,134 @@ export default function MyBlogs() {
         setIsloading(false);
       }
     }
+  }
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as FileType);
+    }
+
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+  };
+
+  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
+  };
+
+  const uploadButton = (
+    <button style={{ border: 0, background: "none" }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
+
+  const setValues = (blog: any) => {
+    console.log(blog);
+    setTitle(blog.title);
+    setCategory(blog.category);
+    setContent(blog.content);
+
+    setImgName(blog.imageName);
+
+    if (blog.imageURL == null) {
+      setFileList([]);
+    } else {
+      setPreviewImage(blog.imageURL);
+      setFileList([
+        {
+          uid: "1",
+          name: "image.png",
+          status: "done",
+          url: blog.imageURL,
+        },
+      ]);
+    }
+  };
+
+  function updateBlog() {
+    setIsActive(true);
+    setIsUpadtedBlog(true);
+    if (fileList[0]) {
+      if (fileList[0].name != "image.png") {
+        deleteImageDb();
+      } else {
+        SaveBlogDB(fileList[0].url as string | null, imgName);
+      }
+    } else {
+      console.log("blog updating");
+      SaveBlogDB(null, "");
+    }
+  }
+
+  function UploadImage() {
+    let extension = fileList[0]?.name.split(".")[1];
+    let uuid = crypto.randomUUID();
+    let file = fileList[0].originFileObj;
+    let PhotoRef = `${uuid}.${extension}`;
+    setImgName(PhotoRef);
+
+    const storageRef = ref(storage, `blogimages/${PhotoRef}`);
+
+    const uploadTask = uploadBytesResumable(storageRef, file as FileType);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      },
+      (error) => {
+        console.log(error);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          SaveBlogDB(downloadURL, PhotoRef);
+        });
+      }
+    );
+  }
+
+  async function SaveBlogDB(downloadURL: string | null, PhotoRef: string) {
+    let docRef = doc(db, "blogs", blogID);
+
+    let blog = {
+      title,
+      category,
+      content,
+      imageURL: downloadURL,
+      imageName: PhotoRef,
+    };
+    try {
+      await setDoc(docRef, blog, { merge: true });
+      setTitle("");
+      setCategory("Category");
+      setContent("");
+      setFileList([]);
+      setIsUpadtedBlog(false);
+      setIsActive(false);
+      let a = document.getElementsByTagName("label");
+      a[1].click();
+
+      let cloneBlogs = [...allBlogs];
+      cloneBlogs.splice(blogIndex, 1, { ...cloneBlogs[blogIndex], ...blog });
+      setAllBlogs(cloneBlogs);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function deleteImageDb() {
+    console.log(imgName);
+    const imageRef = ref(storage, `blogimages/${imgName}`);
+    deleteObject(imageRef)
+      .then(() => {
+        UploadImage();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   return isLoading ? (
@@ -68,7 +231,17 @@ export default function MyBlogs() {
         }}
         className="p-5"
       >
-        {allBlogs.map((blog: DocumentData, index: string) => {
+        {allBlogs.length == 0 && (
+          <p
+            style={{
+              fontSize: "12px",
+            }}
+          >
+            No Blog yet
+          </p>
+        )}
+
+        {allBlogs.map((blog: DocumentData, index: number) => {
           return (
             <div
               className="card card-side bg-base-100 shadow-xl blog-card"
@@ -112,9 +285,17 @@ export default function MyBlogs() {
                         tabIndex={0}
                         className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
                       >
-                        <li>
-                          <a>Edit</a>
-                        </li>
+                        <label htmlFor="my_modal_6">
+                          <li
+                            onClick={() => {
+                              setBlogIndex(index);
+                              setValues(blog);
+                              setblogID(blog.id);
+                            }}
+                          >
+                            <a>Edit</a>
+                          </li>
+                        </label>
                         <li>
                           <a
                             style={{
@@ -164,6 +345,122 @@ export default function MyBlogs() {
             </div>
           );
         })}
+      </div>
+
+      {/* Open the modal using document.getElementById('ID').showModal() method */}
+
+      <input type="checkbox" id="my_modal_6" className="modal-toggle" />
+
+      <div className="modal" role="dialog">
+        <div className="modal-box">
+          {isUpdatedBlog ? (
+            <div
+              style={{
+                display: "flex",
+                width: "100%",
+                height: "300px",
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              <span className="loading loading-spinner text-info  loading-lg"></span>
+            </div>
+          ) : (
+            <div
+              className=""
+              style={{
+                maxWidth: "600px",
+                margin: "auto",
+                display: "flex",
+                flexDirection: "column",
+                padding: "20px",
+                gap: "20px",
+              }}
+            >
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                onPreview={handlePreview}
+                onChange={handleChange}
+                className="accent-content"
+              >
+                {fileList.length >= 1 ? null : uploadButton}
+              </Upload>
+
+              {previewImage && (
+                <Image
+                  wrapperStyle={{ display: "none" }}
+                  preview={{
+                    visible: previewOpen,
+                    onVisibleChange: (visible) => setPreviewOpen(visible),
+                    afterOpenChange: (visible) =>
+                      !visible && setPreviewImage(""),
+                  }}
+                  src={previewImage}
+                />
+              )}
+
+              <input
+                type="text"
+                placeholder="Title"
+                className="input input-bordered w-full"
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
+              />
+
+              <select
+                className="select select-bordered w-full"
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                }}
+              >
+                <option disabled selected value={"Category"}>
+                  Select Category
+                </option>
+                <option>Lifestyle</option>
+                <option>Personal blogs</option>
+                <option>Food</option>
+                <option>Fitness</option>
+                <option>Travel</option>
+                <option>Fashion</option>
+                <option>News</option>
+                <option>Blogging</option>
+                <option>Video Game</option>
+                <option>Music</option>
+                <option>Sports</option>
+                <option>Marketing</option>
+                <option>Politics</option>
+              </select>
+
+              <textarea
+                value={content}
+                onChange={(e) => {
+                  setContent(e.target.value);
+                }}
+                className="textarea textarea-bordered"
+                placeholder="Content"
+              ></textarea>
+            </div>
+          )}
+
+          <div className="modal-action">
+            <label htmlFor="my_modal_6" className="btn">
+              Cancel
+            </label>
+            <button
+              disabled={isActive}
+              className="btn btn-primary"
+              onClick={() => {
+                updateBlog();
+              }}
+            >
+              {isActive ? "Uploading.." : "Save"}
+            </button>
+          </div>
+        </div>
       </div>
     </>
   );

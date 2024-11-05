@@ -84,7 +84,7 @@ export default function BlogDetails({ params }: any) {
                   style={{
                     fontWeight: "bold",
                     marginLeft: "10px",
-                    fontSize : "14px"
+                    fontSize: "14px",
                   }}
                 >
                   {blog?.userName}
@@ -121,7 +121,13 @@ export default function BlogDetails({ params }: any) {
             {blog?.title}
           </h1>
           <div className="badge badge-neutral p-4 mb-5">{blog?.category}</div>
-          <p>{blog?.content}</p>
+          <div
+            style={{
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {blog?.content}
+          </div>
           <button className="btn mt-5">
             <svg
               xmlns="http://www.w3.org/2000/svg"

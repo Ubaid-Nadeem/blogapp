@@ -42,6 +42,8 @@ export default function NewBlog() {
   const [content, setContent] = useState("");
   const [showError, setShowError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [imageFile,setImageFile] = useState<any>();
+  const [imageName,setImageName] = useState("")
   const [isActive, setIsActive] = useState(false);
 
   const storage = getStorage();
@@ -59,11 +61,12 @@ export default function NewBlog() {
     let uuid = crypto.randomUUID();
     let file = fileList[0].originFileObj;
     let PhotoRef = `${uuid}.${extension}`;
-
+    setImageName(PhotoRef)
+    setImageFile(file)
     const storageRef = ref(storage, `blogimages/${PhotoRef}`);
 
     const uploadTask = uploadBytesResumable(storageRef, file as FileType);
-
+ 
     uploadTask.on(
       "state_changed",
       (snapshot) => {
@@ -75,7 +78,7 @@ export default function NewBlog() {
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          SaveBlogDB(downloadURL);
+          SaveBlogDB(downloadURL,PhotoRef);
         });
       }
     );
@@ -83,7 +86,7 @@ export default function NewBlog() {
 
   // save blog in data base
 
-  async function SaveBlogDB(downloadURL: string | null) {
+  async function SaveBlogDB(downloadURL: string | null,PhotoRef : string) {
     let docRef = collection(db, "blogs");
     let currentTime = new Date();
     let blog = {
@@ -92,19 +95,18 @@ export default function NewBlog() {
       content,
       imageURL: downloadURL,
       uid: auth.currentUser?.uid,
-      likes: 0,
+      likes: [],
       date: currentTime,
       userName: auth.currentUser?.displayName,
       profilePicture: auth.currentUser?.photoURL,
+      imageName : PhotoRef
     };
     try {
       await addDoc(docRef, blog);
-
       setTitle("");
       setCategory("Category");
       setContent("");
       setFileList([]);
-
       uploaded("topRight");
       setIsActive(false);
     } catch (error) {
@@ -157,7 +159,7 @@ export default function NewBlog() {
       if (fileList[0]) {
         UploadImage();
       } else {
-        SaveBlogDB(null);
+        SaveBlogDB(null,"");
       }
     } else {
       ErrorDuration();
