@@ -21,7 +21,6 @@ export default function AllBlogs() {
 
   return (
     <div
-      
       style={{
         display: "flex",
         gap: "15px",
@@ -34,12 +33,19 @@ export default function AllBlogs() {
           style={{
             display: "flex",
             width: "100%",
-            height: "100px",
+            height: "200px",
             justifyContent: "center",
             alignContent: "center",
           }}
         >
-          <span className="loading loading-spinner text-info  loading-lg"></span>
+          <span className="loading loading-dots loading-md"></span>
+        </div>
+      ) : blogs.length == 0 ? (
+        <div>
+         
+          <p style={{
+            fontSize : "14px"
+          }}>No blogs Available</p>
         </div>
       ) : (
         blogs.map((item, index) => {

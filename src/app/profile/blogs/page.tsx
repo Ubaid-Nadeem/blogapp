@@ -11,6 +11,7 @@ import {
   query,
   setDoc,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import "./style.css";
@@ -18,7 +19,7 @@ import { useRouter } from "next/navigation";
 import Loading from "@/app/component/loading";
 import { Image, Upload, notification } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import type { GetProp, UploadFile, UploadProps, FormProps } from "antd";
+import { GetProp, UploadFile, UploadProps, FormProps, message } from "antd";
 import {
   getDownloadURL,
   getStorage,
@@ -51,6 +52,8 @@ export default function MyBlogs() {
   const [blogIndex, setBlogIndex] = useState<number>(0);
   const [blogID, setblogID] = useState<string>("");
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const [isActive, setIsActive] = useState(false);
   const [isUpdatedBlog, setIsUpadtedBlog] = useState(false);
   const route = useRouter();
@@ -59,6 +62,27 @@ export default function MyBlogs() {
   useEffect(() => {
     getBlogs();
   }, [user]);
+
+  const updateSuccess = () => {
+    messageApi.open({
+      type: "success",
+      content: "Update Successfu  l",
+    });
+  };
+
+  const errorNotification = () => {
+    messageApi.open({
+      type: "error",
+      content: "Something wrong try again",
+    });
+  };
+
+  const deleteSuccess = () => {
+    messageApi.open({
+      type: "success",
+      content: "Delete Successful",
+    });
+  };
 
   async function getBlogs() {
     if (user) {
@@ -156,6 +180,7 @@ export default function MyBlogs() {
       },
       (error) => {
         console.log(error);
+        errorNotification();
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -177,26 +202,27 @@ export default function MyBlogs() {
     };
     try {
       await setDoc(docRef, blog, { merge: true });
+
       setTitle("");
       setCategory("Category");
       setContent("");
       setFileList([]);
       setIsUpadtedBlog(false);
       setIsActive(false);
+      updateSuccess();
       let a = document.getElementsByTagName("label");
       a[1].click();
 
       let cloneBlogs = [...allBlogs];
       cloneBlogs.splice(blogIndex, 1, { ...cloneBlogs[blogIndex], ...blog });
       setAllBlogs(cloneBlogs);
-      
     } catch (error) {
+      errorNotification();
       console.log(error);
     }
   }
 
   function deleteImageDb() {
-    console.log(imgName);
     const imageRef = ref(storage, `blogimages/${imgName}`);
     deleteObject(imageRef)
       .then(() => {
@@ -204,13 +230,38 @@ export default function MyBlogs() {
       })
       .catch((error) => {
         console.log(error);
+        errorNotification();
+      });
+  }
+
+  async function deleteBlog(blogid: string, index: number, image: string) {
+    console.log(image, blogid, index);
+
+    const imageRef = ref(storage, `blogimages/${image}`);
+    await deleteObject(imageRef)
+      .then(() => {
+        try {
+          deleteDoc(doc(db, "blogs", blogid));
+          deleteSuccess();
+          let cloneBlogs = [...allBlogs];
+          cloneBlogs.splice(index, 1);
+          setAllBlogs(cloneBlogs);
+        } catch (e) {
+          console.log(e);
+          errorNotification();
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        errorNotification();
       });
   }
 
   return isLoading ? (
     <Loading />
   ) : (
-    <>
+    <div>
+      {contextHolder}
       <h2
         className="pl-10 pt-10"
         style={{
@@ -296,7 +347,13 @@ export default function MyBlogs() {
                             <a>Edit</a>
                           </li>
                         </label>
-                        <li>
+                        <li
+                          onClick={() => {
+                            setImgName(blog.imageName);
+                           
+                            deleteBlog(blog.id, index, blog.imageName);
+                          }}
+                        >
                           <a
                             style={{
                               color: "Red",
@@ -462,6 +519,6 @@ export default function MyBlogs() {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
