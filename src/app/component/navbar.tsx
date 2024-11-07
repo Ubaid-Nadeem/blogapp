@@ -18,7 +18,9 @@ export default function Navbar({ isDarkTheme }: any) {
   const route = useRouter();
   const { confirm } = Modal;
 
-  useEffect(() => {}, [user]);
+  useEffect(() => {
+    
+  }, [user]);
 
   function logOut() {
     const auth = getAuth();
@@ -59,9 +61,6 @@ export default function Navbar({ isDarkTheme }: any) {
             cursor: "pointer",
           }}
           className=" text-xl"
-          onClick={() => {
-            route.push("/");
-          }}
         >
           <Image
             style={{
@@ -89,7 +88,10 @@ export default function Navbar({ isDarkTheme }: any) {
                 <div className="w-10 rounded-full">
                   <img
                     alt="Tailwind CSS Navbar component"
-                    src={auth.currentUser?.photoURL || "https://cdn-icons-png.flaticon.com/512/9385/9385289.png"}
+                    src={
+                      auth.currentUser?.photoURL ||
+                      "https://cdn-icons-png.flaticon.com/512/9385/9385289.png"
+                    }
                   />
                 </div>
               </div>
@@ -97,44 +99,47 @@ export default function Navbar({ isDarkTheme }: any) {
                 tabIndex={0}
                 className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
               >
-                <li>
-                  <div
-                    className="form-control flex "
-                    style={{
-                      justifyContent: "space-between",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <p>Dark Mode</p>
-                    <input
-                      type="checkbox"
-                      value="dark"
-                      className="toggle theme-controller"
-                    />
-                  </div>
-                </li>
-                <li>
-                  <a
-                    className="justify-between"
-                    onClick={() => {
-                      route.push("/profile");
-                    }}
-                  >
-                    Profile
-                    <span className="badge">New</span>
-                  </a>
-                </li>
-                <li>
-                  <a
-                    className="justify-between"
-                    onClick={() => {
-                      route.push("/newblog");
-                    }}
-                  >
-                    Create New Blog
-                   
-                  </a>
-                </li>
+                {user?.isVerified && (
+                  <>
+                    <li>
+                      <div
+                        className="form-control flex "
+                        style={{
+                          justifyContent: "space-between",
+                          flexDirection: "row",
+                        }}
+                      >
+                        <p>Dark Mode</p>
+                        <input
+                          type="checkbox"
+                          value="dark"
+                          className="toggle theme-controller"
+                        />
+                      </div>
+                    </li>
+                    <li>
+                      <a
+                        className="justify-between"
+                        onClick={() => {
+                          route.push("/profile");
+                        }}
+                      >
+                        Profile
+                        <span className="badge">New</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="justify-between"
+                        onClick={() => {
+                          route.push("/newblog");
+                        }}
+                      >
+                        Create New Blog
+                      </a>
+                    </li>
+                  </>
+                )}
                 <li
                   onClick={() => {
                     showDeleteConfirm();
@@ -146,7 +151,7 @@ export default function Navbar({ isDarkTheme }: any) {
             </div>
           ) : (
             <Link href={"/login"}>
-            <button className="btn  btn-neutral" >Login</button>
+              <button className="btn  btn-neutral">Login</button>
             </Link>
           )}
         </div>

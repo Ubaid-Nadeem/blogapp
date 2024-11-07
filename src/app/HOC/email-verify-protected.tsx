@@ -5,12 +5,13 @@ import { useAuthContext } from "../context/context";
 import { ReactNode, useEffect, useState } from "react";
 import Loading from "../component/loading";
 import { useRouter } from "next/navigation";
+import { auth } from "../firebase/firebaseconfiq";
 
 type AuthProtectedRoutesTypes = {
   children: ReactNode;
 };
 
-export default function AuthProtectedRoutes({
+export default function EmailProtectedRoutes({
   children,
 }: AuthProtectedRoutesTypes) {
   const { user } = useAuthContext()!;
@@ -19,12 +20,15 @@ export default function AuthProtectedRoutes({
   // const auth = getAuth();
 
   useEffect(() => {
-    const activeUser = localStorage.getItem("loggedIn");
-    if (activeUser) {
-      history.back()
-    } else {
+    if (!user?.isVerified && user) {
+      route.push("/email-verify");
       setIsloading(false);
     }
+
+    if (user?.isVerified && user) {
+      setIsloading(false);
+    }
+    
   }, [user]);
 
   return <>{isLoading ? <Loading /> : children}</>;

@@ -36,6 +36,7 @@ export default function AuthContextProvider({ children }: ChildrenType) {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
+
       if (user) {
         let obj = {
           name: user.displayName,
@@ -46,6 +47,12 @@ export default function AuthContextProvider({ children }: ChildrenType) {
         };
         setUser(obj);
         localStorage.setItem("loggedIn", JSON.stringify(obj));
+
+       
+        // if (!user.emailVerified) {
+        //   route.push("/email-verify");
+        // }
+
       } else {
         setUser(null);
       }

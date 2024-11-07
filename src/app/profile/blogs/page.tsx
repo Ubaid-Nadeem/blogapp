@@ -149,16 +149,23 @@ export default function MyBlogs() {
   function updateBlog() {
     setIsActive(true);
     setIsUpadtedBlog(true);
-    if (fileList[0]) {
-      if (fileList[0].name != "image.png") {
-        deleteImageDb();
+    if(title && content && category){
+      if (fileList[0]) {
+        if (fileList[0].name != "image.png") {
+          deleteImageDb();
+        } else {
+          SaveBlogDB(fileList[0].url as string | null, imgName);
+        }
       } else {
-        SaveBlogDB(fileList[0].url as string | null, imgName);
+        SaveBlogDB(null, "");
       }
-    } else {
-      console.log("blog updating");
-      SaveBlogDB(null, "");
     }
+    else {
+      errorNotification()
+      setIsActive(false);
+      setIsUpadtedBlog(false)
+    }
+   
   }
 
   function UploadImage() {

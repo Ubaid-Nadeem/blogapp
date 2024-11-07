@@ -6,6 +6,7 @@ import AuthContextProvider, { useAuthContext } from "./context/context";
 import FooterSection from "./component/footer";
 import { useState } from "react";
 import logo from "./logo.ico";
+import EmailProtectedRoutes from "./HOC/email-verify-protected";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -46,9 +47,7 @@ export default function RootLayout({
       >
         <AuthContextProvider>
           <Navbar />
-
-          {children}
-
+          <EmailProtectedRoutes>{children}</EmailProtectedRoutes>
           <FooterSection />
         </AuthContextProvider>
       </body>

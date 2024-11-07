@@ -64,7 +64,7 @@ export default function AuthComponent({ authType }: any) {
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
-          route.push("/");
+         
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -158,7 +158,7 @@ export default function AuthComponent({ authType }: any) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user,name)
+      
         createUser(user, name);
 
         updateProfile(auth.currentUser!, {
