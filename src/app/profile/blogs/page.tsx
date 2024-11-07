@@ -1,5 +1,5 @@
 "use client";
-
+// import Image  from "next/image"
 import { useAuthContext } from "@/app/context/context";
 import { auth, db } from "@/app/firebase/firebaseconfiq";
 import {
@@ -27,7 +27,7 @@ import {
   uploadBytesResumable,
   deleteObject,
 } from "firebase/storage";
-
+import dots from "../../../../public/3dot.png"
 type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 export default function MyBlogs() {
@@ -336,7 +336,7 @@ export default function MyBlogs() {
                           marginLeft: "20px",
                           cursor: "pointer",
                         }}
-                        src="https://static.thenounproject.com/png/1126660-200.png"
+                        src={"https://cdn1.iconfinder.com/data/icons/heroicons-solid/20/dots-horizontal-512.png"}
                         alt=""
                       />
                       <ul

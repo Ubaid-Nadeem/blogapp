@@ -18,9 +18,7 @@ export default function Navbar({ isDarkTheme }: any) {
   const route = useRouter();
   const { confirm } = Modal;
 
-  useEffect(() => {
-    
-  }, [user]);
+  useEffect(() => {}, [user]);
 
   function logOut() {
     const auth = getAuth();
@@ -125,6 +123,16 @@ export default function Navbar({ isDarkTheme }: any) {
                         }}
                       >
                         Profile
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="justify-between"
+                        onClick={() => {
+                          route.push("/profile/blogs");
+                        }}
+                      >
+                        My Blogs
                         <span className="badge">New</span>
                       </a>
                     </li>
