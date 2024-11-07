@@ -20,8 +20,9 @@ export default function AuthProtectedRoutes({
 
   useEffect(() => {
     const activeUser = localStorage.getItem("loggedIn");
+    console.log(activeUser)
     if (activeUser) {
-      history.back()
+      route.push("/")
     } else {
       setIsloading(false);
     }

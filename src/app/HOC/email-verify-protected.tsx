@@ -20,15 +20,14 @@ export default function EmailProtectedRoutes({
   // const auth = getAuth();
 
   useEffect(() => {
+    console.log(auth.currentUser);
+
     if (!user?.isVerified && user) {
       route.push("/email-verify");
       setIsloading(false);
-    }
-
-    if (user?.isVerified && user) {
+    } else if ((user?.isVerified && user) || user == null) {
       setIsloading(false);
     }
-    
   }, [user]);
 
   return <>{isLoading ? <Loading /> : children}</>;

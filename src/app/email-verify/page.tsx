@@ -18,16 +18,14 @@ export default function VerifyEmail() {
   const { user, setUser } = useAuthContext()!;
 
   useEffect(() => {
+    console.log(user)
     if (user && auth.currentUser?.emailVerified) {
-    //   let userClone = { ...user, isVerified: true };
-    //   setUser(userClone);
-     route.push("/")
+      //   let userClone = { ...user, isVerified: true };
+      //   setUser(userClone);
+      route.push("/");
+    } else if (user && !auth.currentUser?.emailVerified) {
+      setIsloading(false);
     }
-
-    // if (user && auth.currentUser?.emailVerified == false) {
-    //   setIsloading(false);
-    // }
-
   }, [user]);
 
   const success = () => {
