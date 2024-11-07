@@ -66,7 +66,7 @@ export default function MyBlogs() {
   const updateSuccess = () => {
     messageApi.open({
       type: "success",
-      content: "Update Successfu  l",
+      content: "Update Successful",
     });
   };
 
@@ -333,8 +333,9 @@ export default function MyBlogs() {
                         tabIndex={0}
                         style={{
                           width: "25px",
-                          marginLeft: "20px",
+                          marginLeft: "8px",
                           cursor: "pointer",
+
                         }}
                         src={"https://cdn1.iconfinder.com/data/icons/heroicons-solid/20/dots-horizontal-512.png"}
                         alt=""
