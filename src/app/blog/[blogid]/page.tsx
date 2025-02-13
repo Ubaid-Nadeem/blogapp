@@ -34,6 +34,7 @@ export default function BlogDetails({ params }: any) {
   };
 
   async function getBlog() {
+    console.log( params.blogid)
     let docRef = doc(db, "blogs", params.blogid);
     try {
       let blog = await getDoc(docRef);
